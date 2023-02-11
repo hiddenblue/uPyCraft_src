@@ -227,6 +227,6 @@ Download QScintilla from https://sourceforge.net/projects/pyqt/files/QScintilla2
 
 ## code structure(xmind)
 
-![uPyCraft](https://markdown-1259307480.cos.ap-guangzhou.myqcloud.com/img/uPyCraft.png)
+![uPyCraft](https://github.com/hiddenblue/uPyCraft_src/blob/dev/uPyCraft.png)
 
 **click it to zoom up**
