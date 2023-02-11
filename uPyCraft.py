@@ -39,10 +39,10 @@ from check                      import checkVersionExampleFire, attentionUpdata,
 from threadDownloadFirmware     import threadDownloadFirmware, threadUserFirmware
 from microbit_api               import MICROPYTHON_APIS
 
-from SourceCodePro import SourceCodePro
 
 mainShow=True
-nowIDEVersion      ="1.1"
+# nowIDEVersion      ="1.1"
+nowIDEVersion      ="1.2"
 isCheckFirmware    =False
 rootDirectoryPath  =os.path.expanduser("~")
 rootDirectoryPath  =rootDirectoryPath.replace("\\","/")
@@ -83,7 +83,7 @@ class MainWidget(QMainWindow):
 #basic set
         self.setWindowTitle("uPyCraft V%s"%nowIDEVersion)
         self.setWindowIcon(QIcon(':/logo.png'))
-        self.resize(1000,800)
+        self.resize(1100,900)
         self.setFont()
         self.setIconSize(QSize(36,36))
 
@@ -192,6 +192,12 @@ class MainWidget(QMainWindow):
         """)
 
     def setFont(self):
+        def is_admin():
+            try:
+                return ctypes.windll.shell32.IsUserAnAdmin()
+            except:
+                return False
+
         fonts=None
         if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):#for windows
             FONTDIRS=os.path.join(os.environ['WINDIR'],'Fonts')
@@ -204,29 +210,88 @@ class MainWidget(QMainWindow):
         if fonts==None:
             return
         for filename in fonts:
-            if(filename.upper().find('SOURCECODEPRO.TTF')==0):
-                flags=True
-                break
-        if flags is False:
-            checkfont=QMessageBox.question(self,"SourceCodePro Font",  
-                                    "Please install SourceCodePro font",
-                                    QMessageBox.Ok|QMessageBox.Cancel,  
-                                    QMessageBox.Ok)  
-            if checkfont==QMessageBox.Ok:
-                ttf=binascii.unhexlify(SourceCodePro)
+                if (filename.upper().find('FIRACODE-REGULAR.TTF') == 0):  # 返回索引值，find返回0是找到了，没找到是-1
+                    flags = True
+                    break
+        #flags = False
+        if (flags is False) and (not is_admin()):
+            checkfont=QMessageBox.question(self,"FIRACODE-REGULAR.TTF",
+                                    "FIRACODE-REGULAR.TTF NOT DECTECTED!\nWould you like to install it from the Internet?",
+                                    QMessageBox.Ok|QMessageBox.Cancel,
+                                    QMessageBox.Ok)
+
+            ### modified by hiddenblue
+            def win_install_font():  # for windows platform
+                import elevate  # elevate is function to accquire adminisition privilege to help install font
+                elevate.elevate()
+
+                """ # debug function. if enabled it will raise a powershell windows when there is no FIRACODE-REGULAR.TTF needed.
+                def is_admin():
+                    try:
+                        return ctypes.windll.shell32.IsUserAnAdmin()
+                    except:
+                        return False
+                            try:
+                if is_admin():
+                    os.system("powershell start-process powershell -verb runas")    
+
+                """
+                os.listdir()
+                os.getcwd()
+                os.system("echo hello")
+                from urllib import request
                 try:
-                    fp=open(rootDirectoryPath+'/Desktop/'+'SourceCodePro.ttf','wb')
-                    fp.write(ttf)
-                    fp.close()
+                    font_url = "https://github.com/hiddenblue/uPyCraft_src/blob/dev/FiraCode-Regular.ttf?raw=true"
+                    response = request.urlopen(url=font_url).read()
+                except:
+                    print("Fail to download font file from Github")
+
+                try:
+                    # with open(rootDirectoryPath+'/Desktop/'+'FIRACODE-REGULAR.TTF', "wb") as file:
+                    with open("%s/AppData/Local/uPyCraft/download/FIRACODE-REGULAR.TTF" % rootDirectoryPath,
+                              'wb') as file:
+                        file.write(response)
+                except:
+                    print("write font failed")
+
+                # print(os.system("%s/AppData/Local/uPyCraft/download/FIRACODE-REGULAR.TTF" % rootDirectoryPath))
+                try:
+                    print(rootDirectoryPath)
+                    print(os.system(
+                        "copy %s\\AppData\\Local\\uPyCraft\\download\\FIRACODE-REGULAR.TTF C:\Windows\Fonts" % rootDirectoryPath.replace(
+                            "/", "\\")))
+                    print(os.getcwd())
+                    os.getcwd()
+                    print("successfully write font file from Github")
+                except:
+                    print("fail to install font from Github")
+                    os.getcwd()
+                    print(os.system("PAUSE"))
+            ###
+
+            if is_admin() or checkfont==QMessageBox.Ok:
+                # ttf=binascii.unhexlify(FIRACODE)
+                try:
+                #     fp=open(rootDirectoryPath+'/Desktop/'+'FIRACODE-REGULAR.TTF','wb')
+                #     fp.write(ttf)
+                #     fp.close()
                     if sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
-                        os.system('SourceCodePro.ttf')
+                        win_install_font()
+                        if is_admin():
+                            exit()
+                        # 这里是想在含有字体文件的目录执行安装，可惜windows有权限要求。
+                        # os.system('FIRACODE-REGULAR.TTF')
                     elif sys.platform.startswith('darwin'):
-                        subprocess.call(['open',rootDirectoryPath+'/Desktop/'+'SourceCodePro.ttf'])
+                        subprocess.call(['open',rootDirectoryPath+'/Desktop/'+'FIRACODE-REGULAR.TTF'])
                     #os.remove("SourceCodePro.ttf")
                 except:
                     print("install ttf false.")
-						  
-        font=QFont(self.tr("Source Code Pro"),10)
+
+
+
+            flags = False
+        # font=QFont(self.tr("Source Code Pro"),10)
+        font=QFont(self.tr("Fira Code"),10)
         QApplication.setFont(font)
 
     def createTree(self):
@@ -286,7 +351,8 @@ class MainWidget(QMainWindow):
     def createTabWidget(self):
         self.tabWidget=myTabWidget(self.editorRightMenu,self.fileitem,self)
         self.tabWidget.setTabsClosable(True)
-        self.tabWidget.setFont(QFont(self.tr("Source Code Pro"),10,100))
+        # self.tabWidget.setFont(QFont(self.tr("SourceCodePro-Regular"),10,100))
+        self.tabWidget.setFont(QFont(self.tr("Fira Code"),10,100))
         self.tabWidget.setStyleSheet(""" QWidget{background-color: qlineargradient(x1: 0, x2: 1,stop: 0 #262D34, stop: 1 #222529);
                                      border-width:0px;border-color:#666666;border-style:none;color:white;}
                                      QScrollBar:vertical{background-color:rgb(94,98,102);
@@ -903,6 +969,8 @@ class MainWidget(QMainWindow):
             configFile.close()
             
             configFile=open("%s/AppData/Local/uPyCraft/config.json"%rootDirectoryPath,'rU')
+            configFile=open("%s/AppData/Local/uPyCraft/config.json"%rootDirectoryPath,'r')
+
             configMsg=configFile.read()
             configFile.close()
 
@@ -914,7 +982,9 @@ class MainWidget(QMainWindow):
                 return False
             self.workspacePath=path+"/workSpace"
         else:
-            configFile=open("%s/AppData/Local/uPyCraft/config.json"%rootDirectoryPath,'rU')
+            # configFile=open("%s/AppData/Local/uPyCraft/config.json"%rootDirectoryPath,'rU')
+            configFile=open("%s/AppData/Local/uPyCraft/config.json"%rootDirectoryPath,'r')
+
             configMsg=configFile.read()
             configFile.close()
 
@@ -1892,7 +1962,7 @@ class MainWidget(QMainWindow):
         except:
             print("file ascii to utf8 err.")
         
-        msg=open(filename,"rbU").read()
+        msg=open(filename,"rb").read()
         if type(msg) is bytes:
             msg=msg.decode('utf-8')
         
