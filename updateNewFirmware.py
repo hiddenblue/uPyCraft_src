@@ -141,10 +141,11 @@ class updateNewFirmware(QDialog):
         self.boardComboBox.addItems(["esp8266","TPYBoardV202","esp32","microbit"])
         self.boardComboBox.setCurrentIndex(2)
 
+        # change the default flash addr to 0x1000 for esp32
         self.burnAddrLabel=QLabel(self.tr("burn_addr"))
         self.burnAddrComboBox=QComboBox()
         self.burnAddrComboBox.addItems(["0x0","0x1000"])
-        self.burnAddrComboBox.setCurrentIndex(0)
+        self.burnAddrComboBox.setCurrentIndex(1)
 
         self.eraseflashLabel=QLabel(self.tr("erase_flash"))
         self.eraseComboBox=QComboBox()
@@ -162,10 +163,10 @@ class updateNewFirmware(QDialog):
         self.myGroupBoxLayout = QGridLayout()
         
         self.firmwareTip=QLabel(self.tr("Firmware Choose"))
-        self.radioUPY=QRadioButton("uPyCraft")
         self.radioUser=QRadioButton("Users")
+        self.radioUPY=QRadioButton("uPyCraft")
         self.firmwareName=QLineEdit()
-        self.chooseFirmwareButton=QPushButton(self.tr("choose"))   
+        self.chooseFirmwareButton=QPushButton(self.tr("choose"))
 
         self.myGroupBoxLayout.addWidget(self.radioUPY,0,0)
         self.myGroupBoxLayout.addWidget(self.radioUser,1,0)
@@ -206,8 +207,10 @@ class updateNewFirmware(QDialog):
 
             layout.addWidget(self.okButton,6,0)
             layout.addWidget(self.cancelButton,6,2)
-            
-        self.radioUPY.setChecked(True)
+
+        # modified the default firmware source from uPycraft to User
+        # self.radioUPY.setChecked(True)
+        self.radioUser.setChecked(True)
         self.firmwareName.setEnabled(False)
         self.chooseFirmwareButton.setVisible(False)
 
@@ -217,8 +220,10 @@ class updateNewFirmware(QDialog):
         else:
             self.eraseComboBox.setEnabled(True)
 
+
+# change the default flash addr to 0x1000 for esp32
         if self.boardComboBox.currentText()=="esp32":
-            self.burnAddrComboBox.setCurrentIndex(0)
+            self.burnAddrComboBox.setCurrentIndex(1)
             self.burnAddrComboBox.setEnabled(True)
         else:
             self.burnAddrComboBox.setEnabled(False)
@@ -254,7 +259,7 @@ class updateNewFirmware(QDialog):
             self.eraseComboBox.setEnabled(True)
 
         if self.boardComboBox.currentText()=="esp32":
-            self.burnAddrComboBox.setCurrentIndex(0)
+            self.burnAddrComboBox.setCurrentIndex(1)
             self.burnAddrComboBox.setEnabled(True)
         else:
             self.burnAddrComboBox.setCurrentIndex(0)

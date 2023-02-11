@@ -12,7 +12,7 @@ import sys
 import math
 import json
 import os
-import Esp
+
 import shutil
 import webbrowser
 import qrc_resources
@@ -29,6 +29,10 @@ import pyflakes
 from urllib import request
 from pyflakes.api import main as pyflakesMain
 
+
+# below are packages imported from py file.
+
+import Esp
 from graphicsInterface          import saveUntitled, createBoardNewDirName, findReplaceText, \
                                        SerialWidget, LanLocWidget, Preferences, treeRightClickRename
 from readWriteUart              import readWriteUart
@@ -407,9 +411,9 @@ class MainWidget(QMainWindow):
 
         self.mainWindow.addWidget(self.tree)
         self.mainWindow.addWidget(self.rightSplitter)
-
+#widen the left directory windows. make it more confortable.
         self.mainWindow.setStretchFactor(0,1)
-        self.mainWindow.setStretchFactor(1,7)
+        self.mainWindow.setStretchFactor(1,5)
         self.mainWindow.setFrameShape(QFrame.NoFrame)
 
     def createActions(self):

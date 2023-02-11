@@ -223,3 +223,10 @@ Download QScintilla from https://sourceforge.net/projects/pyqt/files/QScintilla2
 
 - migrate the uPyCraft from PyQt4 to PyQt5.
 - safelly reduce the rudundant dependence of uPycraft
+
+
+## code structure(xmind)
+
+![uPyCraft](https://markdown-1259307480.cos.ap-guangzhou.myqcloud.com/img/uPyCraft.png)
+
+**click it to zoom up**
